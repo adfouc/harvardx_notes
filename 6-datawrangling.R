@@ -1589,9 +1589,62 @@ str(x)
 length(x[[1]])
 s<-x[[1]]
 str(s)
+class(s)
 s<-str_trim(s)
 s[1]
+# détecter la 1ere ligne contenant 2015
 header_index <- str_which(s,"2015")[1]
+s[header_index]
 tmp<-str_split(s[header_index],"\\s+",simplify = TRUE)
+tmp
 month<-tmp[1]
 header<-tmp[-1]
+month
+header
+#
+tail_index<-str_which(s,"Total")
+tail_index
+s[tail_index]
+#
+str_count(s,"\\d+")
+numsingledigits<-sum(str_count(s,"\\d+")==1)
+length(s)-header_index - (length(s)-tail_index+1)-numsingledigits
+# detecter les lignes avec digits et les compter
+n <- str_count(s, "\\d+")
+sum(n == 1)
+which(n==1)
+out <- c(1:header_index, which(n==1), tail_index:length(s))
+out
+s <- s[-out]
+s
+length(s)
+# remove non digits and non space chars
+s <- str_remove_all(s, "[^\\d\\s]")
+# onvert s into a data matrix with just the day and death count data:
+s <- str_split_fixed(s, "\\s+", n = 6)[,1:5]
+# 
+tab <- data.frame(s)%>% setNames( c("day",header)) %>%    mutate(month=month)
+# attention ceci corrompt les données. En fait des factors à convertir en character puis en numeric !
+# tab<-  tab %>% mutate_all(as.numeric)  
+tab<-tab %>% mutate_at(2:5, as.character) %>% mutate_at(2:5,parse_number)
+str(tab)
+tab$'2015'
+mean(tab$'2015')
+mean(tab$'2016')
+# What was the mean number of deaths per day from September 1-19, 2017, before the hurricane hit?
+mean(tab$'2017'[1:19])
+mean(tab$'2017'[20:30])
+
+# la reponse : AS_DATA_FRAME convertit direct en NUMERIC contrairement a DATA.FRAME()
+tab <- s %>% 
+  as_data_frame() %>% 
+  setNames(c("day", header)) %>%
+  mutate_all(as.numeric)
+mean(tab$"2015")
+str(tab)
+#
+tab <- tab %>% gather(year, deaths, -day) %>%
+  mutate(deaths = as.numeric(deaths))
+tab
+# Make a plot of deaths versus day with color to denote year. Exclude 2018 since we have no data. Add a vertical line at day 20, the day that Hurricane María hit in 2017.
+tab%>% filter(year!=2018) %>% ggplot(aes(day,deaths,colour=year)) + geom_line()+ geom_vline(xintercept = 20)
