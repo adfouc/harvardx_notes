@@ -1,5 +1,53 @@
 # DATA WRANGLING
 
+## En résumé
+# 
+# 
+# colnames(x) <- paste("x", 1:ncol(x), sep = "_")
+# 
+# dat %>% separate(key, c("year", "variable_name"), "_")
+# df <- data.frame(x = c(NA, "a.b", "a.d", "b.c","e.f.g.h"))
+# df %>% separate(x, c("A", "B","C"), fill="right",extra="merge")
+# A    B    C
+# 1 <NA> <NA> <NA>
+#   2    a    b <NA>
+#   3    a    d <NA>
+#   4    b    c <NA>
+#   5    e    f  g.h
+#
+# wide_data %>% gather(year, fertility, `1960`:`2015`)
+# new_tidy_data %>% spread(year, fertility)
+#
+# gsub(pattern, replacement, x, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
+# str_split_fixed(string, pattern, n)
+# str_detect(text, pattern) # Detect the presence or absence of a pattern in a string. => logical vector
+# str_subset(string, pattern) # Keep strings matching a pattern, or find positions.
+# str_replace(string, pattern, replacement)
+
+# dl <- tempfile()
+# download.file("http://files.grouplens.org/datasets/movielens/ml-10m.zip", dl)
+# 
+# ratings <- fread(text = gsub("::", "\t", readLines(unzip(dl, "ml-10M100K/ratings.dat"))),
+#                  col.names = c("userId", "movieId", "rating", "timestamp"))
+#
+# dplyr joins for dataframes
+# left_join(), right_join(), inner_join() 
+# full_join() keeps all rows from both tables.
+# semi_join() keeps the part of first table for which we have information in the second.
+# anti_join() keeps the elements of the first table for which there is no information in the second.
+#
+# dataframes summaries
+# dplyr::count(userId)
+# summarize(n_users = n_distinct(userId)
+# summarize(n = n(), years = 2018 - first(year), title = title[1])
+# top_n(25, rate) %>% arrange(desc(rate))
+#   arrange(desc(b_i)) %>% slice(1:10)  %>%   pull(title)
+# dataframes manipulations
+# bind_rows()
+# knitr::kable()
+#
+# rep(1:4, each = 2)
+# [1] 1 1 2 2 3 3 4 4
 
 ### Code
 # see working directory

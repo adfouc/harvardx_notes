@@ -1,10 +1,5 @@
 
-# -----------------------------------------------
-# 
 
-
-# -----------------------------------------------
-# 
 
 
 
@@ -225,3 +220,127 @@ co2_time+xlim(-800000,-775000)
 co2_time+xlim(-375000,-330000)
 co2_time+xlim(-140000,-120000)
 co2_time+xlim(-3000,2018)
+
+######################################################################@@
+##
+##  EXEMPLES DE PLOTS
+##
+##
+######################################################################@@
+
+######################################################################@@
+## BOXPLOT ##
+
+data.frame(pc = pc$x[,7], tissue = tissue_gene_expression$y) %>%
+  ggplot(aes(pc, tissue)) +
+  geom_boxplot()
+
+for(i in 1:10){
+  boxplot(pc$x[,i] ~ tissue_gene_expression$y, main = paste("PC", i))
+}
+
+data.frame(type = brca$y, pca$x[,1:10]) %>%
+  gather(key = "PC", value = "value", -type) %>%
+  ggplot(aes(PC, value, fill = type)) +
+  geom_boxplot()
+
+titanic%>%filter(!is.na(Fare)&Fare!=0)%>%
+  ggplot(aes(x=Survived,y=Fare))+geom_boxplot()+geom_jitter(width = 0.2, alpha = 0.2)+scale_y_continuous(trans="log2")
+
+qplot(year, n, data = ., geom = "boxplot") 
+
+######################################################################@@
+## SCATTERPLOT  + Nuage de points
+
+library(ggrepel)
+dat %>%
+  mutate(year = paste0("life_expectancy_", year)) %>%
+  select(country, year, life_expectancy) %>% spread(year, life_expectancy) %>%
+  mutate(average = (life_expectancy_2015 + life_expectancy_2010)/2,
+         difference = life_expectancy_2015 - life_expectancy_2010) %>%
+  ggplot(aes(average, difference, label = country)) +
+  geom_point() +
+  geom_text_repel() +
+  geom_abline(lty = 2) +
+  xlab("Average of 2010 and 2015") +
+  ylab("Difference between 2015 and 2010")
+
+######################################################################@@
+## Faceting
+
+filter(gapminder, year%in%c(1962, 2012)) %>%
+  ggplot(aes(fertility, life_expectancy, col = continent)) +
+  geom_point() +
+  facet_grid(continent~year)
+
+years <- c(1962, 1980, 1990, 2000, 2012)
+continents <- c("Europe", "Asia")
+gapminder %>% 
+  filter(year %in% years & continent %in% continents) %>%
+  ggplot( aes(fertility, life_expectancy, col = continent)) +
+  geom_point() +
+  facet_wrap(~year) 
+
+# variante
+facet_wrap(. ~ year, scales = "free")
+
+library(gridExtra)
+p1 <- qplot(M, bins = 30, color = I("black"))
+p2 <- qplot(sample = scale(M)) + geom_abline()
+grid.arrange(p1, p2, ncol = 2)
+
+
+######################################################################@@
+## BARS
+# https://ggplot2.tidyverse.org/reference/geom_bar.html
+# 
+
+# by default, count the elements in a given category x or y
+
+ggplot(aes(gender, number_of_students, fill = admission)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(. ~ major)
+
+# to show values y given x:  geom_col()
+
+######################################################################@@
+## Basic plots
+
+plot(x, y)
+
+hist(x)
+
+boxplot(rate~region, data = murders)
+
+x <- matrix(1:120, 12, 10)
+image(x)
+
+qplot(year, n, data = ., geom = "boxplot") 
+
+######################################################################@@
+## Axes, legendes, Echelles SCALES
+
+coord_trans(y = "sqrt") 
+scale_y_sqrt()
+
+# orientation axe 
+ + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# titres et legendes
+
+  xlab("Average of 2010 and 2015") +
+  ylab("Difference between 2015 and 2010")
+
+# ajustement
+library(ggrepel)
+...
+  geom_point() +
+  geom_text_repel() +
+
+# show.legend = FALSE
+ggplot(aes(year, life_expectancy, group = country)) +
+    geom_line(aes(color = country), show.legend = FALSE) +
+    geom_text(aes(x = location, label = country, hjust = hjust), show.legend = FALSE) +
+    xlab("") +
+    ylab("Life Expectancy")     
+  + ggtitle("title ")
