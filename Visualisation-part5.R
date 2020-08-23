@@ -344,3 +344,5 @@ ggplot(aes(year, life_expectancy, group = country)) +
     xlab("") +
     ylab("Life Expectancy")     
   + ggtitle("title ")
+  
+  
